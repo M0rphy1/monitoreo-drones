@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESPOCH - Dron -user</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="shortcut icon" href="./assets/ICONE LSB.png" type="image/x-icon">
+
+    <script src="https://kit.fontawesome.com/40e1b7901b.js" crossorigin="anonymous"></script>
+</head>
+<body>   
+    
+    <nav id="navigation" class="">
+
+        <div class="wrapper">
+
+            <a class="logo" href="#home">
+                <img  src="./assets/LOGO GG.svg" alt="Logo LSB Digital">
+            </a>
+            
+            <div class="menu">
+
+                <ul>
+                    <li><a onclick="closeMenu()" href="#">Acceder Cámara</a></li>
+                </ul>
+                
+                <a onclick="closeMenu()" href="#">
+                  <!-- <button class="user-button" id="userButton">
+                    <span id="userName" style="color: rgb(200, 200, 200);">Usuario</span>
+                    <i class="fas fa-chevron-down"></i>
+                  </button> -->
+                    <span id="userName" style="color: rgb(200, 200, 200);">Usuario</span>
+                    <i class="fas fa-chevron-down"></i>
+                  <ul class="dropdown-menu hidden" id="dropdownMenu">
+                    <li><a class="dropdown-item" href="perfil.html">Mi Perfil</a></li>
+                    <li class="dropdown-footer">
+                      <a id="logoutButton" class="btn btn-error btn-soft" href="#">Cerrar Sesión</a>
+                    </li>
+                  </ul>
+                </a>
+            </div>
+            
+
+            <button 
+            aria-expanded="false"
+            aria-label="Abrir menu"
+            onclick="openMenu()" 
+            class="open-menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 20H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 12H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 28L30 28" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg> 
+            </button>
+            <button
+            aria-expanded="true"
+            aria-label="Fechar menu"
+            onclick="closeMenu()" 
+            class="close-menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 10L10 30M10 10L30 30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+            </button>
+
+        </div>
+           
+    </nav>
+
+    <header class="header" id="home">   
+
+        <div id="particles-js">
+        </div> 
+         
+        <div class="wrapper">
+           <div class="content">
+                <div class="text">
+                    <h1>Vigilancia aérea inteligente: <span>monitoreamos cada evento desde el cielo</span>.</h1>
+                </div>
+
+                <div class="mundo-box">
+                    <div class="mundo">
+                        <div class="circulo um"></div>
+                        <div class="circulo dois"></div>
+                        <div class="conteudo">
+                          <img src="./assets/formato mundo.png" class="mascara">
+                          <img src="./assets/blush formato roxo.png" class="blush">
+                          <img src="./assets/paises.png" class="paises">
+                        </div>
+                    </div>
+
+                    <div class="notifications">
+                        <div class="notification one">
+                            <img src="./assets/areadificil.png" alt="">
+                            <p>Áreas difícil acceso.</p>
+                        </div>
+
+                        <div class="notification two">
+                            <img src="./assets/cobertura.png" alt="">
+                            <p>Mayor Alcance</p>
+                        </div>
+
+                        <div class="notification three">
+                            <img src="./assets/info.png" alt="">
+                            <p>Información Tiempo Real</p>
+                        </div>
+                        <div class="notification for">
+                            <img src="./assets/camarafija.png" alt="">
+                            <p>Alternativa a cámaras fijas</p>
+                        </div>
+                        <div class="notification five">
+                            <img src="./assets/drone_0.png" alt="">
+                            <p>Monitoreo Aéreo</p>
+                        </div>
+                    </div>
+                </div>
+           </div>
+        </div>
+        <img class="circle" src="./assets/Shape Divider.svg" alt="">
+    </header>
+
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
+    <script src="./particles.min.js"></script>
+    <script>
+        particlesJS(
+            {
+                "particles": {
+                    "number": {
+                    "value": 70,
+                    "density": {
+                        "enable": true,
+                        "value_area": 1200
+                    }
+                    },
+                    "color": {
+                    "value": "#0053a5"
+                    },
+                    "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": .3,
+                        "color": "#7033FF",
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    },
+                    "image": {
+                        "src": "img/github.svg",
+                        "width": 100,
+                        "height": 100
+                    }
+                    },
+                    "opacity": {
+                    "value": 0.05,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                    },
+                    "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 0,
+                        "size_min": 0,
+                        "sync": false
+                    }
+                    },
+                    "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#aeafff",
+                    "opacity": 0.4,
+                    "width": 1
+                    },
+                    "move": {
+                    "enable": true,
+                    "speed": 1.5735393620871414,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                    },
+                    "modes": {
+                    "grab": {
+                        "distance": 400,
+                        "line_linked": {
+                        "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                    }
+                },
+                "retina_detect": true
+                }
+        )
+    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const userNameElement = document.getElementById('userName');
+  const logoutButton = document.getElementById('logoutButton');
+  const profileButton = document.getElementById('profileButton');
+
+  // Obtener el nombre de usuario del localStorage
+  const nombreUsuario = localStorage.getItem('nombreUsuario');
+
+  if (nombreUsuario) {
+    userNameElement.textContent = nombreUsuario;
+  } else {
+    // Si no hay usuario en el localStorage, redirigir al login
+    window.location.href = '/login.html';
+  }
+
+  // Manejar el cierre de sesión
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('nombreUsuario');
+    alert('Sesión cerrada');
+    window.location.href = '/index.html';
+  });
+
+  // Redirigir a la página de perfil
+  profileButton.addEventListener('click', () => {
+    window.location.href = '/perfil.html';
+  });
+});
+    </script>    
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html> 

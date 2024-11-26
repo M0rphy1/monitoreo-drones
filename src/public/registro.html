@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Registro de Usuario</title>
+  </head>
+  <body>
+    <div class="container-form register">
+      <div class="information">
+        <div class="info-childs">
+          <h2>Bienvenido</h2>
+          <p>Bienvenido a nuestra comunidad</p>
+          <input
+            type="button"
+            value="Iniciar Sesión"
+            onclick="window.location.href = 'login.html';"
+          />
+          <br>
+          <input
+            type="button"
+            value="Regresar"
+            onclick="window.location.href = 'index.html';"
+          />
+        </div>
+      </div>
+      <div class="form-information">
+        <div class="form-information-childs">
+          <h2>Crear una cuenta</h2>
+          <form id="registerForm">
+            <label>
+              <i class="bx bx-user"></i>
+              <input
+                type="text"
+                id="nombreUsuario"
+                name="nombreUsuario"
+                placeholder="Nombre de Usuario"
+                required
+              />
+            </label>
+            <label><br>
+              <i class="bx bx-envelope"></i>
+              <input
+                type="email"
+                id="correo"
+                name="correo"
+                placeholder="Correo Electrónico"
+                required
+              />
+            </label><br>
+            <label>
+              <i class="bx bxs-lock-alt"></i>
+              <input
+                type="password"
+                id="contrasena"
+                name="contrasena"
+                placeholder="Contraseña"
+                required
+              />
+            </label>
+            <label><br>
+              <i class="bx bx-user"></i>
+              <input type="text" id="nombre" name="nombre" placeholder="Nombre" required />
+            </label>
+            <label><br>
+              <i class="bx bx-user"></i>
+              <input
+                type="text"
+                id="apellido"
+                name="apellido"
+                placeholder="Apellido"
+                required
+              />
+            </label>
+            <label><br>
+              <i class="bx bx-phone"></i>
+              <input
+                type="text"
+                id="telefono"
+                name="telefono"
+                placeholder="Teléfono"
+                required
+              />
+            </label>
+            <label><br>
+              <i class="bx bx-home"></i>
+              <input
+                type="text"
+                id="direccion"
+                name="direccion"
+                placeholder="Dirección"
+                required
+              />
+            </label><br>
+            <!-- Selección del rol -->
+        <label for="rol">Rol:</label>
+        <select id="rol" required>
+          <option value="0">------</option>
+          <option value="1">Administrador</option>
+          <option value="2">Usuario</option>
+        </select><br>
+            <input type="submit" value="Registrarse" />
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enlace al archivo JavaScript externo -->
+    <script src="registro.js"></script>
+  </body>
+</html>

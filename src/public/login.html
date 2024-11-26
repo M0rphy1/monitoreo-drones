@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Iniciar Sesión</title>
+  </head>
+  <body>
+    <div class="container-form login">
+      <div class="information">
+        <div class="info-childs">
+          <h2>Bienvenido Nuevamente</h2>
+          <p>Bienvenido a nuestra comunidad</p>
+          <input
+            type="button"
+            value="Registrarse"
+            onclick="window.location.href = 'registro.html';"
+          />
+          <br>
+          <input
+            type="button"
+            value="Regresar"
+            onclick="window.location.href = 'index.html';"
+          />
+        </div>
+      </div>
+      <div class="form-information">
+        <div class="form-information-childs">
+          <h2>Iniciar Sesión</h2>
+          <form id="loginForm">
+            <label>
+              <i class="bx bx-envelope"></i>
+              <input
+                type="email"
+                id="correo"
+                name="correo"
+                placeholder="Correo Electrónico"
+                required
+              /><br /> </label
+            ><br />
+            <label>
+              <i class="bx bxs-lock-alt"></i>
+              <input
+                type="password"
+                id="contrasena"
+                name="contrasena"
+                placeholder="Contraseña"
+                required
+              /><br /> </label
+            ><br />
+            <input type="submit" value="Iniciar Sesión" />
+          </form>
+          <p><a href="recuperar_contrasena.html">¿Olvidaste tu contraseña?</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enlace al archivo de JavaScript externo -->
+    <script src="login.js"></script>
+  </body>
+</html>
+
