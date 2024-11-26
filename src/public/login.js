@@ -28,7 +28,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     if (data.rol === 1) {
       // Administrador
       alert(`Inicio de sesión exitoso como Administrador`);
-      window.location.href = '/admin.html';
+      window.location.href = '/index-admin.html';
     } else {
       // Usuario
       alert(`Inicio de sesión exitoso como Usuario`);

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESPOCH - Dron</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="shortcut icon" href="./assets/ICONE LSB.png" type="image/x-icon">
+
+    <script src="https://kit.fontawesome.com/40e1b7901b.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* Estilo para la tabla */
+        .user-table-container {
+            margin: 2rem auto;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #0053a5;
+            color: #fff;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>   
+    <nav id="navigation" class="">
+        <div class="wrapper">
+            <a class="logo" href="#home">
+                <img src="./assets/LOGO GG.svg" alt="Logo LSB Digital">
+            </a>
+            
+            <div class="menu">
+                <ul>
+                    <li><a onclick="closeMenu()" href="index-admin.html">Home</a></li>
+                    <li><a onclick="closeMenu()" href="#">Acceder Cámara</a></li>
+                    <li><a onclick="closeMenu()" href="gestion-usuarios.html">Usuarios</a></li>
+                </ul>
+                
+                <a onclick="closeMenu()" href="#">
+                    <span id="userName" style="color: rgb(200, 200, 200);">Usuario</span>
+                    <i class="fas fa-chevron-down"></i>
+                    <ul class="dropdown-menu hidden" id="dropdownMenu">
+                        <li class="dropdown-footer">
+                            <a id="logoutButton" class="btn btn-error btn-soft" href="#">Cerrar Sesión</a>
+                        </li>
+                    </ul>
+                </a>
+            </div>
+
+            <button 
+                aria-expanded="false"
+                aria-label="Abrir menu"
+                onclick="openMenu()" 
+                class="open-menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 20H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 12H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 28L30 28" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg> 
+            </button>
+            <button
+                aria-expanded="true"
+                aria-label="Fechar menu"
+                onclick="closeMenu()" 
+                class="close-menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 10L10 30M10 10L30 30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                        
+            </button>
+        </div>
+    </nav>
+
+    <header class="header" id="home">   
+        <div id="particles-js"></div> 
+        <!-- Contenedor de la tabla -->
+    <div class="user-table-container">
+        <div class="title">Gestión de Usuarios</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <!-- Los usuarios se cargarán dinámicamente aquí -->
+            </tbody>
+        </table>
+    </div>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const userNameElement = document.getElementById('userName');
+          const logoutButton = document.getElementById('logoutButton');
+          const profileButton = document.getElementById('profileButton');
+        
+          // Obtener el nombre de usuario del localStorage
+          const nombreUsuario = localStorage.getItem('nombreUsuario');
+        
+          if (nombreUsuario) {
+            userNameElement.textContent = nombreUsuario;
+          } else {
+            // Si no hay usuario en el localStorage, redirigir al login
+            window.location.href = '/login.html';
+          }
+        
+          // Manejar el cierre de sesión
+          logoutButton.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('nombreUsuario');
+            alert('Sesión cerrada');
+            window.location.href = '/index.html';
+          });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userTableBody = document.getElementById('userTableBody');
+
+            // Cargar usuarios desde el backend
+            const loadUsers = async () => {
+                try {
+                    const response = await fetch('/api/usuarios');
+                    const users = await response.json();
+
+                    userTableBody.innerHTML = '';
+                    users.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.id}</td>
+                            <td>${user.nombreUsuario}</td>
+                            <td>${user.correo}</td>
+                            <td>${user.idRol === 1 ? 'Administrador' : 'Usuario'}</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editUser('${user.nombreUsuario}')">Editar</button>
+                                <button class="btn btn-delete" onclick="deleteUser('${user.nombreUsuario}')">Eliminar</button>
+                            </td>
+                        `;
+                        userTableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error al cargar usuarios:', error);
+                }
+            };
+
+            // Función para eliminar usuario
+            const deleteUser = async (nombreUsuario) => {
+                if (confirm('¿Estás seguro de eliminar este usuario?')) {
+                    try {
+                        await fetch(`/api/usuarios/${nombreUsuario}`, { method: 'DELETE' });
+                        alert('Usuario eliminado correctamente');
+                        loadUsers();
+                    } catch (error) {
+                        console.error('Error al eliminar usuario:', error);
+                    }
+                }
+            };
+
+            // Función para editar usuario
+            const editUser = (nombreUsuario) => {
+                alert(`Aquí se editará la información del usuario: ${nombreUsuario}`);
+                // Aquí puedes abrir un modal o redirigir a otra página de edición.
+            };
+
+            // Cargar usuarios al inicio
+            loadUsers();
+        });
+    </script>
+</body>
+</html>
