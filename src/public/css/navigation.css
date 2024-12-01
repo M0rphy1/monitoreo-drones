@@ -72,7 +72,8 @@ nav {
 
   backdrop-filter: blur(10px) saturate(180%);
   -webkit-backdrop-filter: blur(10px) saturate(180%);
-  background-color: rgba(37, 37, 37, 0.16);
+  /* background-color: rgba(37, 37, 37, 0.16); */
+  background-color: rgba(37, 37, 37, 0.8); /* Más opaco */
   border-radius: 0;
   border: 1px solid rgba(63, 63, 63, 0.125);
 
@@ -120,7 +121,8 @@ nav .close-menu {
 nav.scroll {
   backdrop-filter: blur(10px) saturate(180%);
   -webkit-backdrop-filter: blur(10px) saturate(180%);
-  background-color: rgba(0, 0, 0, 0.486);
+  /* background-color: rgba(0, 0, 0, 0.486); */
+  background-color: rgba(0, 0, 0, 0.9); /* Más opaco */
   border-radius: 0;
   border: 1px solid rgba(63, 63, 63, 0.125);
 }
@@ -143,7 +145,7 @@ body.menu-expanded .open-menu {
 
 body.menu-expanded .menu,
 body.menu-expanded .close-menu {
-  opacity: 1;
+  opacity: 10;
   visibility: visible;
 }
 
@@ -172,7 +174,8 @@ body.menu-expanded .menu {
 
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  background-color: rgba(37, 37, 37, 0.16);
+  /* background-color: rgba(37, 37, 37, 0.16); */
+  background-color: rgba(37, 37, 37, 0.8); /* Más opaco */
   border-radius: 0;
   border: 1px solid rgba(63, 63, 63, 0.125);
 
