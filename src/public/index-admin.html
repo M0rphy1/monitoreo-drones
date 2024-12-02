@@ -11,6 +11,63 @@
     <link rel="shortcut icon" href="./assets/ICONE LSB.png" type="image/x-icon">
 
     <script src="https://kit.fontawesome.com/40e1b7901b.js" crossorigin="anonymous"></script>
+    <style>
+        #particles-js {
+           position: fixed; /* Fija el fondo */
+           top: 0;
+           left: 0;
+           width: 100%; /* Ocupa todo el ancho de la pantalla */
+           height: 100%; /* Ocupa toda la altura de la pantalla */
+           z-index: -1; /* Asegura que esté detrás de todo el contenido */
+           background-color: transparent; /* Asegúrate de que no bloquee otros fondos */
+       }
+       .floating-img {
+            position: absolute; /* Posiciona la imagen respecto a su contenedor */
+            top: 220px; /* Ajusta la distancia desde la parte superior */
+            right: 1px; /* Ajusta la distancia desde la derecha */
+            width: 1000px; /* Ajusta el tamaño de la imagen */
+            height: auto; /* Mantén las proporciones */
+            z-index: 10; /* Asegura que la imagen esté encima del texto */
+        }
+
+        .content {
+            position: relative; /* Hace que .floating-img se posicione dentro de este contenedor */
+        }
+   </style>
+   <style>
+    .wrapper {
+        position: relative;
+        width: 100%;
+        height: auto;
+        overflow: hidden; /* Asegura que nada salga del contenedor */
+    }
+
+    .content {
+        position: relative;
+        z-index: 10; /* Mantiene el contenido encima del video */
+    }
+
+    .background-video {
+        position: absolute; /* Permite moverlo dentro de su contenedor */
+        top: 229.5px; /* Distancia desde la parte superior */
+        left: 588px; /* Distancia desde la izquierda */
+        width: 800px; /* Ancho del video */
+        height: auto; /* Mantén las proporciones */
+        z-index: 1; /* Asegura que esté detrás del contenido principal */
+        object-fit: cover; /* Ajusta el video al contenedor sin distorsión */
+        opacity: 0.7; /* Reduce la opacidad para un efecto más sutil */
+        pointer-events: none; /* Evita que el video sea interactivo */
+        mask-image: linear-gradient(to bottom, transparent, black); /* Máscara para ocultar el negro */
+        -webkit-mask-image: linear-gradient(to bottom, transparent, black); /* Compatibilidad para WebKit */
+    }
+    .video-container {
+        width: 400px; /* Ajusta el ancho deseado */
+        height: 400px; /* Ajusta el alto deseado */
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto; /* Centra el contenedor si es necesario */
+    }
+</style>
 </head>
 <body>   
     
@@ -81,6 +138,11 @@
            <div class="content">
                 <div class="text">
                     <h1>Bienvenido de nuevo <span>Administrador</span>.</h1>
+                    <img src="./assets/dron.png" alt="Dron" class="floating-img">
+                    <video class="background-video" autoplay loop muted playsinline>
+                        <source src="./assets/dron-ani.mp4" type="video/mp4">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
                 </div>
            </div>
         </div>
