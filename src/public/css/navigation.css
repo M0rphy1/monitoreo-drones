@@ -175,7 +175,7 @@ body.menu-expanded .menu {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   /* background-color: rgba(37, 37, 37, 0.16); */
-  background-color: rgba(37, 37, 37, 0.8); /* Más opaco */
+  background-color: rgba(56, 56, 56, 0.8); /* Más opaco */
   border-radius: 0;
   border: 1px solid rgba(63, 63, 63, 0.125);
 

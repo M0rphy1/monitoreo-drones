@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="shortcut icon" href="./assets/ICONE LSB.png" type="image/x-icon">
+
+    <script src="https://kit.fontawesome.com/40e1b7901b.js" crossorigin="anonymous"></script>
+    <style>
+        .user-table-container {
+            margin: 2rem auto;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .modal-content {
+            border-radius: 20px;
+        }
+        .btn-edit, .btn-delete {
+            font-size: 1.2rem; /* Tamaño de letra más grande */
+            padding: 10px 10px; /* Botones más grandes */
+            border-radius: 8px; /* Bordes redondeados */
+        }
+
+        .btn-edit {
+            background-color: #0066cc; /* Azul más oscuro */
+            color: #fff;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background-color: #004a99;
+        }
+
+        .btn-delete {
+            background-color: #cc0000; /* Rojo más oscuro */
+            color: #fff;
+            border: none;
+        }
+
+        .btn-delete:hover {
+            background-color: #990000;
+        }
+        /*Ventana modal*/
+        .modal-body input {
+            font-size: 2rem; /* Tamaño de texto de los campos */
+            padding: 15 px;
+            border-radius: 6px;
+        }
+        .modal-body .form-label {
+            font-size: 2rem; /* Tamaño de texto de las etiquetas */
+            color: #333;
+        }
+        /* Encabezado de la tabla */
+        .table-primary {
+            background-color: #0053a5; /* Azul oscuro */
+            color: #fff; /* Texto blanco */
+        }
+        #particles-js {
+            position: fixed; /* Fija el fondo */
+            top: 0;
+            left: 0;
+            width: 100%; /* Ocupa todo el ancho de la pantalla */
+            height: 100%; /* Ocupa toda la altura de la pantalla */
+            z-index: -1; /* Asegura que esté detrás de todo el contenido */
+            background-color: transparent; /* Asegúrate de que no bloquee otros fondos */
+        }
+        .bg-light {
+            background-color: #c480dd; /* Tono de morado suave */
+        }
+        /* Estilos para el botón de cerrar sesión */
+        #logoutButton {
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav id="navigation" class="">
+
+        <div class="wrapper">
+
+            <a class="logo" href="index-admin.html">
+                <img  src="./assets/LOGO GG.svg" alt="Logo LSB Digital">
+            </a>
+            
+            <div class="menu">
+
+                <ul >
+                    <li><a onclick="closeMenu()" style="color: rgb(255, 255, 255);" href="index-admin.html">Home</a></li>
+                    <li><a onclick="closeMenu()" style="color: rgb(255, 255, 255);" href="#">Acceder Cámara</a></li>
+                    <li><a onclick="closeMenu()" style="color: rgb(255, 255, 255);" href="#user">Usuarios</a></li>
+                </ul>
+                
+                <a onclick="closeMenu()" href="#">
+                    <span id="userName" style="color: rgb(255, 255, 255);">Usuario</span>
+                    <i class="fas fa-chevron-down"></i>
+                  <ul class="dropdown-menu hidden" id="dropdownMenu">
+                    <li class="dropdown-footer">
+                      <a id="logoutButton" class="btn btn-error btn-soft" style="color: rgb(255, 255, 255);" href="#">
+                        Cerrar Sesión</a>
+                    </li>
+                  </ul>
+                </a>
+            </div>
+
+            <button 
+            aria-expanded="false"
+            aria-label="Abrir menu"
+            onclick="openMenu()" 
+            class="open-menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 20H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 12H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 28L30 28" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg> 
+            </button>
+            <button
+            aria-expanded="true"
+            aria-label="Fechar menu"
+            onclick="closeMenu()" 
+            class="close-menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 10L10 30M10 10L30 30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+            </button>
+
+        </div>
+           
+    </nav>
+    <br><br><br><br><br><br><br>
+    <div id="particles-js">
+        
+    </div> 
+    <div class="container user-table-container">
+        <h1>Gestión de Usuarios</h1>
+        <table class="table table-striped">
+            <thead class="table-primary">
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <!-- Contenido generado dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para editar usuario -->
+    <div id="editModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <div class="mb-3">
+                            <label for="editNombreUsuario" class="form-label">Usuario</label>
+                            <input type="text" id="editNombreUsuario" class="form-control" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editNombre" class="form-label">Nombre</label>
+                            <input type="text" id="editNombre" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editApellido" class="form-label">Apellido</label>
+                            <input type="text" id="editApellido" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTelefono" class="form-label">Teléfono</label>
+                            <input type="text" id="editTelefono" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDireccion" class="form-label">Dirección</label>
+                            <input type="text" id="editDireccion" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para eliminar usuario -->
+    <div id="deleteModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteUserName">¿Estás seguro de que deseas eliminar este usuario?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const userNameElement = document.getElementById('userName');
+          const logoutButton = document.getElementById('logoutButton');
+          const profileButton = document.getElementById('profileButton');
+        
+          // Obtener el nombre de usuario del localStorage
+          const nombreUsuario = localStorage.getItem('nombreUsuario');
+        
+          if (nombreUsuario) {
+            userNameElement.textContent = nombreUsuario;
+          } else {
+            // Si no hay usuario en el localStorage, redirigir al login
+            window.location.href = '/login.html';
+          }
+        
+          // Manejar el cierre de sesión
+          logoutButton.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('nombreUsuario');
+            alert('Sesión cerrada');
+            window.location.href = '/index.html';
+          });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userTableBody = document.getElementById('userTableBody');
+            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            let selectedUser = null;
+
+            // Cargar usuarios
+            const loadUsers = async () => {
+                try {
+                    const response = await fetch('/api/usuarios');
+                    const users = await response.json();
+
+                    userTableBody.innerHTML = '';
+                    users.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.nombreUsuario}</td>
+                            <td>${user.nombre}</td>
+                            <td>${user.apellido}</td>
+                            <td>${user.telefono || 'No especificado'}</td>
+                            <td>${user.direccion || 'No especificada'}</td>
+                            <td>
+                                <button class="btn btn-edit btn-sm" onclick="openEditModal('${user.nombreUsuario}')">Editar</button>
+                                <button class="btn btn-delete btn-sm" onclick="openDeleteModal('${user.nombreUsuario}')">Eliminar</button>
+                            </td>
+                        `;
+                        userTableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error al cargar usuarios:', error);
+                }
+            };
+
+            // Abrir modal de edición
+            window.openEditModal = async (nombreUsuario) => {
+                try {
+                    const response = await fetch(`/api/usuarios/${nombreUsuario}`);
+                    const user = await response.json();
+
+                    selectedUser = user.nombreUsuario;
+                    document.getElementById('editNombreUsuario').value = user.nombreUsuario;
+                    document.getElementById('editNombre').value = user.nombre;
+                    document.getElementById('editApellido').value = user.apellido;
+                    document.getElementById('editTelefono').value = user.telefono || '';
+                    document.getElementById('editDireccion').value = user.direccion || '';
+
+                    editModal.show();
+                } catch (error) {
+                    console.error('Error al cargar datos del usuario:', error);
+                }
+            };
+
+            // Guardar cambios
+            document.getElementById('editForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const nombre = document.getElementById('editNombre').value;
+                const apellido = document.getElementById('editApellido').value;
+                const telefono = document.getElementById('editTelefono').value;
+                const direccion = document.getElementById('editDireccion').value;
+
+                try {
+                    await fetch(`/api/usuarios/${selectedUser}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nombre, apellido, telefono, direccion }),
+                    });
+
+                    alert('Usuario actualizado correctamente.');
+                    editModal.hide();
+                    loadUsers();
+                } catch (error) {
+                    console.error('Error al guardar usuario:', error);
+                }
+            });
+
+            // Abrir modal de eliminación
+            window.openDeleteModal = (nombreUsuario) => {
+                selectedUser = nombreUsuario;
+                document.getElementById('deleteUserName').textContent = `¿Estás seguro de que deseas eliminar el usuario ${nombreUsuario}?`;
+                deleteModal.show();
+            };
+
+            // Confirmar eliminación
+            document.getElementById('confirmDeleteButton').addEventListener('click', async () => {
+                try {
+                    await fetch(`/api/usuarios/${selectedUser}`, { method: 'DELETE' });
+                    alert('Usuario eliminado correctamente.');
+                    deleteModal.hide();
+                    loadUsers();
+                } catch (error) {
+                    console.error('Error al eliminar usuario:', error);
+                }
+            });
+
+            loadUsers();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="./script.js"></script>
+    <script src="./particles.min.js"></script>
+    <script>
+        particlesJS(
+            {
+                "particles": {
+                    "number": {
+                    "value": 70,
+                    "density": {
+                        "enable": true,
+                        "value_area": 1200
+                    }
+                    },
+                    "color": {
+                    "value": "#0053a5"
+                    },
+                    "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": .3,
+                        "color": "#7033FF",
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    },
+                    "image": {
+                        "src": "img/github.svg",
+                        "width": 100,
+                        "height": 100
+                    }
+                    },
+                    "opacity": {
+                    "value": 0.05,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                    },
+                    "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 0,
+                        "size_min": 0,
+                        "sync": false
+                    }
+                    },
+                    "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#aeafff",
+                    "opacity": 0.4,
+                    "width": 1
+                    },
+                    "move": {
+                    "enable": true,
+                    "speed": 1.5735393620871414,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                    },
+                    "modes": {
+                    "grab": {
+                        "distance": 400,
+                        "line_linked": {
+                        "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                    }
+                },
+                "retina_detect": true
+                }
+        )
+    </script>
+</body>
+</html>
