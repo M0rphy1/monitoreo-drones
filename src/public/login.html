@@ -13,6 +13,10 @@
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/style.css" />
     <title>Iniciar Sesión</title>
   </head>
@@ -27,7 +31,7 @@
             value="Registrarse"
             onclick="window.location.href = 'registro.html';"
           />
-          <br>
+          <br />
           <input
             type="button"
             value="Regresar"
@@ -47,8 +51,10 @@
                 name="correo"
                 placeholder="Correo Electrónico"
                 required
-              /><br /> </label
-            ><br />
+              />
+              <br />
+            </label>
+            <br /><br>
             <label>
               <i class="bx bxs-lock-alt"></i>
               <input
@@ -57,16 +63,67 @@
                 name="contrasena"
                 placeholder="Contraseña"
                 required
-              /><br /> </label
-            ><br />
+              />
+              <br />
+            </label>
+            <br /><br>
             <input type="submit" value="Iniciar Sesión" />
           </form>
-          <p><a href="recuperar_contrasena.html">¿Olvidaste tu contraseña?</a></p>
+          <p>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">
+              ¿Olvidaste tu contraseña?
+            </a>
+          </p>
         </div>
       </div>
     </div>
 
-    <!-- Enlace al archivo de JavaScript externo -->
+    <!-- Modal para recuperar contraseña -->
+    <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="resetPasswordLabel">Recuperar Contraseña</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="resetPasswordForm">
+              <div class="mb-3">
+                <label for="resetEmail" class="form-label">Correo Electrónico:</label>
+                <input type="email" class="form-control" id="resetEmail" required />
+              </div>
+              <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+            <div id="resetMessage" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Manejar el envío del formulario de recuperación
+      document.getElementById("resetPasswordForm").addEventListener("submit", async function (e) {
+        e.preventDefault(); // Prevenir el envío por defecto
+
+        const email = document.getElementById("resetEmail").value;
+
+        try {
+          const response = await fetch("/auth/reset-password", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          const data = await response.text();
+          document.getElementById("resetMessage").innerText = data;
+        } catch (error) {
+          document.getElementById("resetMessage").innerText = "Error al enviar el correo.";
+        }
+      });
+    </script>
     <script src="login.js"></script>
   </body>
 </html>
