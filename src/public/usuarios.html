@@ -146,8 +146,11 @@
                     <th>Usuario</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
+                    <th>Correo</th>
+                    <th>Contraseña</th>
                     <th>Teléfono</th>
                     <th>Dirección</th>
+                    <th>Rol</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -241,6 +244,20 @@
         });
     </script>
     <script>
+        // Función para enmascarar correos
+        const maskEmail = (email) => {
+            const [name, domain] = email.split('@');
+            const maskedName = name[0] + '*'.repeat(name.length - 2) + name[name.length - 1];
+            const maskedDomain = domain.replace(/(?<=.).(?=.*\.)/g, '*');
+            return `${maskedName}@${maskedDomain}`;
+        };
+
+        // Función para enmascarar contraseñas
+        const maskPassword = (password) => {
+            const visibleLength = 10; // Define cuántos caracteres enmascarados mostrar
+            return '*'.repeat(visibleLength);  
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             const userTableBody = document.getElementById('userTableBody');
             const editModal = new bootstrap.Modal(document.getElementById('editModal'));
@@ -260,8 +277,11 @@
                             <td>${user.nombreUsuario}</td>
                             <td>${user.nombre}</td>
                             <td>${user.apellido}</td>
+                            <td>${maskEmail(user.correo)}</td>
+                            <td>${maskPassword(user.contrasena)}</td>
                             <td>${user.telefono || 'No especificado'}</td>
                             <td>${user.direccion || 'No especificada'}</td>
+                            <td>${user.idRol === 1 ? 'Administrador' : 'Usuario'}</td>
                             <td>
                                 <button class="btn btn-edit btn-sm" onclick="openEditModal('${user.nombreUsuario}')">Editar</button>
                                 <button class="btn btn-delete btn-sm" onclick="openDeleteModal('${user.nombreUsuario}')">Eliminar</button>
