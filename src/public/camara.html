@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detección con Notificaciones</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        #video-container {
+            width: 90%;
+            height: calc(70vh); /* Altura del contenedor ajustada */
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #notification-setup, #notifications {
+            width: 90%;
+            margin: 20px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Transmisión en vivo</h1>
+    <div id="video-container">
+        <iframe id="camera-stream" src="http://127.0.0.1:5000/start-camera" allowfullscreen></iframe>
+    </div>
+
+    <div id="notification-setup">
+        <label for="notification-class">Clase para recibir notificaciones:</label>
+        <input type="text" id="notification-class" placeholder="Ejemplo: person">
+        <button onclick="setNotificationClass()">Configurar</button>
+    </div>
+
+    <div id="notifications">
+        <h2>Notificaciones:</h2>
+        <ul id="notification-list"></ul>
+    </div>
+
+    <!-- Archivo de sonido -->
+    <audio id="notification-sound" src="./assets/notification.mp3" preload="auto"></audio>
+
+    <script>
+        const socket = io('http://127.0.0.1:5000');
+
+        function setNotificationClass() {
+            const notificationClass = document.getElementById('notification-class').value;
+            if (notificationClass) {
+                socket.emit('set_notification_class', { class: notificationClass });
+            }
+        }
+
+        socket.on('notification', (data) => {
+            const notificationList = document.getElementById('notification-list');
+            const newNotification = document.createElement('li');
+            newNotification.textContent = data.message;
+            notificationList.appendChild(newNotification);
+
+            // Reproducir el sonido
+            const audio = document.getElementById('notification-sound');
+            audio.play();
+        });
+
+        socket.on('confirmation', (data) => {
+            alert(data.message);
+        });
+    </script>
+</body>
+</html>
+
