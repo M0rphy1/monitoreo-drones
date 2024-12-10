@@ -169,7 +169,7 @@
 
 #home .content .text a button:hover {
   cursor: pointer;
-  border: 1px solid #321dd4;
+  border: 1px solid #00aaff;
   opacity: 1;
 }
 
@@ -212,7 +212,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  background: radial-gradient(circle, #0b0827 0%, #0b0442 80%);
+  background: radial-gradient(circle, #0b0827 0%, #00aaff 80%);
   animation: backgroundRadial 200s linear infinite;
   transition: all 2s;
 }

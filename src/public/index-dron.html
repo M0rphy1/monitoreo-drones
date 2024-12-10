@@ -83,7 +83,6 @@
 
                 <ul>
                     <li><a onclick="closeMenu()" href="index-dron.html">Home</a></li>
-                    <!-- <li><a onclick="closeMenu()" href="#">Acceder Cámara</a></li> -->
                     <li><a onclick="closeMenu()" href="camara.html">Acceder Cámara</a></li>
                 </ul>
                 <span id="userName" style="color: rgb(200, 200, 200);">Usuario</span>
@@ -131,10 +130,10 @@
                 <div class="text">
                     <h1>Bienvenido: <span>Usuario</span>.</h1>
                     <img src="./assets/dron.png" alt="Dron" class="floating-img">
-                    <video class="background-video" autoplay loop muted playsinline>
+                    <!-- <video class="background-video" autoplay loop muted playsinline>
                         <source src="./assets/dron-ani.mp4" type="video/mp4">
                         Tu navegador no soporta la reproducción de video.
-                    </video>
+                    </video> -->
                 </div>
            </div>
         </div>
@@ -143,9 +142,6 @@
     <div class="cursor-dot" data-cursor-dot></div>
     <div class="cursor-outline" data-cursor-outline></div>
     <script>
-        // function openCamera() {
-        //     window.open('http://localhost:5000/start-camera', '_blank');
-        // }
         function openCamera() {
             window.open('http://127.0.0.1:5000/start-camera', '_blank'); // Reemplaza 127.0.0.1 con tu IP si accedes desde otro dispositivo
         }
