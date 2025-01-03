@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detección con Notificaciones</title>
+    <title>Transmisión en vivo</title>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <style>
         #video-container {
             width: 90%;
-            height: calc(70vh); /* Altura del contenedor ajustada */
+            height: calc(70vh);
             margin: auto;
             display: flex;
             flex-direction: column;
@@ -21,10 +21,41 @@
             border: none;
         }
 
-        #notification-setup, #notifications {
+        #controls, #notification-setup {
+            margin: 20px;
+            text-align: center;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #notifications {
             width: 90%;
             margin: 20px auto;
             text-align: center;
+        }
+
+        #gallery-container {
+            width: 90%;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .gallery video {
+            width: 30%;
+            border: 1px solid #ccc;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -32,6 +63,12 @@
     <h1 style="text-align: center;">Transmisión en vivo</h1>
     <div id="video-container">
         <iframe id="camera-stream" src="http://127.0.0.1:5000/start-camera" allowfullscreen></iframe>
+    </div>
+
+    <div id="controls">
+        <button onclick="startRecording()">Iniciar Grabación</button>
+        <button onclick="stopRecording()">Detener Grabación</button>
+        <!-- <button onclick="loadGallery()">Actualizar Galería</button> -->
     </div>
 
     <div id="notification-setup">
@@ -44,12 +81,33 @@
         <h2>Notificaciones:</h2>
         <ul id="notification-list"></ul>
     </div>
-
     <!-- Archivo de sonido -->
     <audio id="notification-sound" src="./assets/notification.mp3" preload="auto"></audio>
 
+    <!-- <div id="gallery-container">
+        <h2>Galería de Videos</h2>
+        <div class="gallery" id="video-gallery"></div>
+    </div> -->
+
     <script>
         const socket = io('http://127.0.0.1:5000');
+
+        function startRecording() {
+            fetch('http://127.0.0.1:5000/start-recording', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(err => console.error(err));
+        }
+
+        function stopRecording() {
+            fetch('http://127.0.0.1:5000/stop-recording', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    loadGallery();
+                })
+                .catch(err => console.error(err));
+        }
 
         function setNotificationClass() {
             const notificationClass = document.getElementById('notification-class').value;
@@ -58,13 +116,27 @@
             }
         }
 
+        function loadGallery() {
+            fetch('http://127.0.0.1:5000/list-videos')
+                .then(response => response.json())
+                .then(videos => {
+                    const gallery = document.getElementById('video-gallery');
+                    gallery.innerHTML = '';
+                    videos.forEach(video => {
+                        const videoElement = document.createElement('video');
+                        videoElement.src = `http://127.0.0.1:5000/videos/${video}`;
+                        videoElement.controls = true;
+                        gallery.appendChild(videoElement);
+                    });
+                })
+                .catch(err => console.error(err));
+        }
+
         socket.on('notification', (data) => {
             const notificationList = document.getElementById('notification-list');
             const newNotification = document.createElement('li');
             newNotification.textContent = data.message;
             notificationList.appendChild(newNotification);
-
-            // Reproducir el sonido
             const audio = document.getElementById('notification-sound');
             audio.play();
         });
@@ -72,7 +144,13 @@
         socket.on('confirmation', (data) => {
             alert(data.message);
         });
+
+        socket.on('recording-status', (data) => {
+            alert(data.status);
+        });
+
+        // Cargar la galería de videos al cargar la página
+        document.addEventListener('DOMContentLoaded', loadGallery);
     </script>
 </body>
 </html>
-
