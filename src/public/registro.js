@@ -18,6 +18,14 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
   } catch (error) {
     console.error("Error al verificar la existencia del Administrador:", error);
+
+    // Mostrar error con SweetAlert2
+    Swal.fire({
+      title: "Error",
+      text: "Hubo un problema al verificar la existencia del Administrador.",
+      icon: "error",
+      confirmButtonText: "Aceptar",
+    });
   }
 });
 
@@ -59,11 +67,27 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     }
 
     // Mostrar el rol correcto según la asignación (1 = Administrador, 2 = Usuario)
-    alert(`Registro exitoso como ${idRol == 1 ? 'Administrador' : 'Usuario'}`);
-    window.location.href = 'login.html';
+    Swal.fire({
+      title: "Registro exitoso",
+      text: `Te has registrado exitosamente como ${idRol == 1 ? 'Administrador' : 'Usuario'}.`,
+      icon: "success",
+      confirmButtonText: "Aceptar",
+      timer: 3000,
+    }).then(() => {
+      // Redirigir al usuario a la página de inicio de sesión
+      window.location.href = 'login.html';
+    });
   } catch (error) {
     console.error('Error al registrar usuario:', error.message);
-    alert(error.message);
+
+    // Mostrar error con SweetAlert2
+    Swal.fire({
+      title: "Error",
+      text: error.message || "Hubo un problema al registrar el usuario.",
+      icon: "error",
+      confirmButtonText: "Aceptar",
+    });
   }
 });
+
 

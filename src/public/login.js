@@ -27,18 +27,40 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     // Redirigir según el rol
     if (data.rol === 1) {
       // Administrador
-      alert(`Inicio de sesión exitoso como Administrador`);
-      window.location.href = '/index-admin.html';
+      Swal.fire({
+        title: 'Inicio de sesión exitoso',
+        text: 'Bienvenido como Administrador',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        timer: 3000,
+      }).then(() => {
+        window.location.href = '/index-admin.html'; // Redirigir
+      });
     } else {
       // Usuario
-      alert(`Inicio de sesión exitoso como Usuario`);
-      window.location.href = '/index-dron.html';
+      Swal.fire({
+        title: 'Inicio de sesión exitoso',
+        text: 'Bienvenido como Usuario',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        timer: 3000,
+      }).then(() => {
+        window.location.href = '/index-dron.html'; // Redirigir
+      });
     }
   } catch (error) {
     console.error('Error al iniciar sesión:', error.message);
-    alert(error.message);
+
+    // Mostrar error con SweetAlert2
+    Swal.fire({
+      title: 'Error',
+      text: error.message,
+      icon: 'error',
+      confirmButtonText: 'Intentar nuevamente',
+    });
   }
 });
+
 
 
 

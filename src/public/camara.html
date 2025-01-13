@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transmisión en vivo</title>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="./css/index.css">
     <style>
         #video-container {
@@ -135,64 +137,90 @@
 
     <script>
         const socket = io('http://127.0.0.1:5000');
-
+    
         function startRecording() {
             fetch('http://127.0.0.1:5000/start-recording', { method: 'POST' })
                 .then(response => response.json())
-                .then(data => alert(data.message))
-                .catch(err => console.error(err));
-        }
-
-        function stopRecording() {
-            fetch('http://127.0.0.1:5000/stop-recording', { method: 'POST' })
-                .then(response => response.json())
                 .then(data => {
-                    alert(data.message);
-                    loadGallery();
-                })
-                .catch(err => console.error(err));
-        }
-
-        function setNotificationClass() {
-            const notificationClass = document.getElementById('notification-class').value;
-            if (notificationClass) {
-                socket.emit('set_notification_class', { class: notificationClass });
-            }
-        }
-
-        function loadGallery() {
-            fetch('http://127.0.0.1:5000/list-videos')
-                .then(response => response.json())
-                .then(videos => {
-                    const gallery = document.getElementById('video-gallery');
-                    gallery.innerHTML = '';
-                    videos.forEach(video => {
-                        const videoElement = document.createElement('video');
-                        videoElement.src = `http://127.0.0.1:5000/videos/${video}`;
-                        videoElement.controls = true;
-                        gallery.appendChild(videoElement);
+                    Swal.fire({
+                        title: 'Grabación iniciada',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar',
+                        timer: 3000,
                     });
                 })
                 .catch(err => console.error(err));
         }
-
+    
+        function stopRecording() {
+            fetch('http://127.0.0.1:5000/stop-recording', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire({
+                        title: 'Grabación detenida',
+                        text: data.message,
+                        icon: 'info',
+                        confirmButtonText: 'Aceptar',
+                        timer: 3000,
+                    });
+                    loadGallery();
+                })
+                .catch(err => console.error(err));
+        }
+    
+        function setNotificationClass() {
+            const notificationClass = document.getElementById('notification-class').value;
+            if (notificationClass) {
+                socket.emit('set_notification_class', { class: notificationClass });
+                Swal.fire({
+                    title: 'Clase configurada',
+                    text: `Notificaciones configuradas para: ${notificationClass}`,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                    timer: 3000,
+                });
+            }
+        }
+    
         socket.on('notification', (data) => {
             const notificationList = document.getElementById('notification-list');
             const newNotification = document.createElement('li');
             newNotification.textContent = data.message;
             notificationList.appendChild(newNotification);
+    
+            Swal.fire({
+                title: 'Notificación',
+                text: data.message,
+                icon: 'info',
+                confirmButtonText: 'Aceptar',
+                timer: 3000,
+            });
+    
             const audio = document.getElementById('notification-sound');
             audio.play();
         });
-
+    
         socket.on('confirmation', (data) => {
-            alert(data.message);
+            Swal.fire({
+                title: 'Confirmación',
+                text: data.message,
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                timer: 3000,
+            });
         });
-
+    
         socket.on('recording-status', (data) => {
-            alert(data.status);
+            Swal.fire({
+                title: 'Estado de grabación',
+                text: data.status,
+                icon: 'info',
+                confirmButtonText: 'Aceptar',
+                timer: 3000,
+            });
         });
-
+    
         // Cargar la galería de videos al cargar la página
         document.addEventListener('DOMContentLoaded', loadGallery);
     </script>
