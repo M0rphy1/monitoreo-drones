@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transmisión en vivo</title>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <link rel="stylesheet" href="./css/index.css">
     <style>
         #video-container {
             width: 90%;
@@ -60,7 +61,56 @@
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">Transmisión en vivo</h1>
+    <!-- Menú de navegación -->
+    <nav id="navigation" class="">
+
+        <div class="wrapper">
+
+            <a class="logo" href="index-dron.html">
+                <img  src="./assets/LOGO GG.svg" alt="Logo LSB Digital">
+            </a>
+            
+            <div class="menu">
+
+                <ul>
+                    <li><a onclick="closeMenu()" href="index-dron.html">Principal</a></li>
+                    <li><a onclick="closeMenu()" href="camara.html">Acceder Cámara</a></li>
+                </ul>
+                  <ul class="dropdown-menu hidden" id="dropdownMenu">
+                    <li><a class="dropdown-item" href="perfil.html">Mi Perfil</a></li>
+                    <li class="dropdown-footer">
+                      <a id="logoutButton" class="btn btn-error btn-soft" href="#">Cerrar Sesión</a>
+                    </li>
+            </div>
+            
+
+            <button 
+            aria-expanded="false"
+            aria-label="Abrir menu"
+            onclick="openMenu()" 
+            class="open-menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 20H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 12H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 28L30 28" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg> 
+            </button>
+            <button
+            aria-expanded="true"
+            aria-label="Fechar menu"
+            onclick="closeMenu()" 
+            class="close-menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 10L10 30M10 10L30 30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+            </button>
+
+        </div>
+           
+    </nav>
+    <!--  -->
+    <br><br><br><br><br><br><br>
+    <h1 style="text-align: center; color: white;">Transmisión en vivo</h1>
     <div id="video-container">
         <iframe id="camera-stream" src="http://127.0.0.1:5000/start-camera" allowfullscreen></iframe>
     </div>
@@ -68,26 +118,20 @@
     <div id="controls">
         <button onclick="startRecording()">Iniciar Grabación</button>
         <button onclick="stopRecording()">Detener Grabación</button>
-        <!-- <button onclick="loadGallery()">Actualizar Galería</button> -->
     </div>
 
     <div id="notification-setup">
-        <label for="notification-class">Clase para recibir notificaciones:</label>
+        <label for="notification-class" style="color: rgb(255, 255, 255);">Clase para recibir notificaciones:</label>
         <input type="text" id="notification-class" placeholder="Ejemplo: person">
         <button onclick="setNotificationClass()">Configurar</button>
     </div>
 
-    <div id="notifications">
+    <div id="notifications" style="color: rgb(255, 255, 255);">
         <h2>Notificaciones:</h2>
         <ul id="notification-list"></ul>
     </div>
     <!-- Archivo de sonido -->
     <audio id="notification-sound" src="./assets/notification.mp3" preload="auto"></audio>
-
-    <!-- <div id="gallery-container">
-        <h2>Galería de Videos</h2>
-        <div class="gallery" id="video-gallery"></div>
-    </div> -->
 
     <script>
         const socket = io('http://127.0.0.1:5000');
