@@ -9,7 +9,10 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="shortcut icon" href="./assets/ICONE LSB.png" type="image/x-icon">
-
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://kit.fontawesome.com/40e1b7901b.js" crossorigin="anonymous"></script>
     <style>
         .user-table-container {
@@ -94,7 +97,7 @@
 
                 <ul >
                     <li><a onclick="closeMenu()" style="color: rgb(255, 255, 255);" href="index-admin.html">Principal</a></li>
-                    <li><a onclick="closeMenu()" style="color: rgb(255, 255, 255);" href="camara.html">Acceder Cámara</a></li>
+                    <!-- <li><a onclick="closeMenu()" style="color: rgb(255, 255, 255);" href="camara.html">Acceder Cámara</a></li> -->
                     <li><a onclick="closeMenu()" style="color: rgb(255, 255, 255);" href="usuarios.html">Usuarios</a></li>
                 </ul>
                 
@@ -236,10 +239,29 @@
         
           // Manejar el cierre de sesión
           logoutButton.addEventListener('click', () => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('nombreUsuario');
-            alert('Sesión cerrada');
-            window.location.href = '/index.html';
+            Swal.fire({
+              title: '¿Estás seguro?',
+              text: 'Tu sesión será cerrada.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Cerrar sesión',
+              cancelButtonText: 'Cancelar',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // El usuario confirmó cerrar sesión
+                localStorage.removeItem('token');
+                localStorage.removeItem('nombreUsuario');
+                Swal.fire({
+                  title: 'Sesión cerrada',
+                  text: 'Has cerrado sesión exitosamente.',
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar',
+                }).then(() => {
+                  // Redirigir al index después de cerrar sesión
+                  window.location.href = '/index.html';
+                });
+              }
+            });
           });
         });
     </script>
@@ -251,25 +273,25 @@
             const maskedDomain = domain.replace(/(?<=.).(?=.*\.)/g, '*');
             return `${maskedName}@${maskedDomain}`;
         };
-
+    
         // Función para enmascarar contraseñas
         const maskPassword = (password) => {
             const visibleLength = 10; // Define cuántos caracteres enmascarados mostrar
-            return '*'.repeat(visibleLength);  
+            return '*'.repeat(visibleLength);
         };
-
+    
         document.addEventListener('DOMContentLoaded', () => {
             const userTableBody = document.getElementById('userTableBody');
             const editModal = new bootstrap.Modal(document.getElementById('editModal'));
             const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
             let selectedUser = null;
-
+    
             // Cargar usuarios
             const loadUsers = async () => {
                 try {
                     const response = await fetch('/api/usuarios');
                     const users = await response.json();
-
+    
                     userTableBody.innerHTML = '';
                     users.forEach(user => {
                         const row = document.createElement('tr');
@@ -293,72 +315,105 @@
                     console.error('Error al cargar usuarios:', error);
                 }
             };
-
+    
             // Abrir modal de edición
             window.openEditModal = async (nombreUsuario) => {
                 try {
                     const response = await fetch(`/api/usuarios/${nombreUsuario}`);
                     const user = await response.json();
-
+    
                     selectedUser = user.nombreUsuario;
                     document.getElementById('editNombreUsuario').value = user.nombreUsuario;
                     document.getElementById('editNombre').value = user.nombre;
                     document.getElementById('editApellido').value = user.apellido;
                     document.getElementById('editTelefono').value = user.telefono || '';
                     document.getElementById('editDireccion').value = user.direccion || '';
-
+    
                     editModal.show();
                 } catch (error) {
                     console.error('Error al cargar datos del usuario:', error);
                 }
             };
-
+    
             // Guardar cambios
             document.getElementById('editForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-
+    
                 const nombre = document.getElementById('editNombre').value;
                 const apellido = document.getElementById('editApellido').value;
                 const telefono = document.getElementById('editTelefono').value;
                 const direccion = document.getElementById('editDireccion').value;
-
+    
                 try {
                     await fetch(`/api/usuarios/${selectedUser}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ nombre, apellido, telefono, direccion }),
                     });
-
-                    alert('Usuario actualizado correctamente.');
+    
+                    Swal.fire({
+                        title: 'Usuario actualizado',
+                        text: 'El usuario ha sido actualizado correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar',
+                    });
+    
                     editModal.hide();
                     loadUsers();
                 } catch (error) {
                     console.error('Error al guardar usuario:', error);
+    
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Hubo un problema al actualizar el usuario.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar',
+                    });
                 }
             });
-
+    
             // Abrir modal de eliminación
             window.openDeleteModal = (nombreUsuario) => {
                 selectedUser = nombreUsuario;
-                document.getElementById('deleteUserName').textContent = `¿Estás seguro de que deseas eliminar el usuario ${nombreUsuario}?`;
-                deleteModal.show();
+    
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: `¿Deseas eliminar el usuario ${nombreUsuario}? Esta acción no se puede deshacer.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            await fetch(`/api/usuarios/${selectedUser}`, { method: 'DELETE' });
+    
+                            Swal.fire({
+                                title: 'Usuario eliminado',
+                                text: 'El usuario ha sido eliminado correctamente.',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar',
+                            });
+    
+                            loadUsers();
+                        } catch (error) {
+                            console.error('Error al eliminar usuario:', error);
+    
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Hubo un problema al eliminar el usuario.',
+                                icon: 'error',
+                                confirmButtonText: 'Aceptar',
+                            });
+                        }
+                    }
+                });
             };
-
-            // Confirmar eliminación
-            document.getElementById('confirmDeleteButton').addEventListener('click', async () => {
-                try {
-                    await fetch(`/api/usuarios/${selectedUser}`, { method: 'DELETE' });
-                    alert('Usuario eliminado correctamente.');
-                    deleteModal.hide();
-                    loadUsers();
-                } catch (error) {
-                    console.error('Error al eliminar usuario:', error);
-                }
-            });
-
+    
             loadUsers();
         });
     </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

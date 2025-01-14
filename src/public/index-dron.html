@@ -9,6 +9,10 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="shortcut icon" href="./assets/ICONE LSB.png" type="image/x-icon">
+    <!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://kit.fontawesome.com/40e1b7901b.js" crossorigin="anonymous"></script>
     <style>
@@ -261,35 +265,63 @@
         )
     </script>
     <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const userNameElement = document.getElementById('userName');
-  const logoutButton = document.getElementById('logoutButton');
-  const profileButton = document.getElementById('profileButton');
-
-  // Obtener el nombre de usuario del localStorage
-  const nombreUsuario = localStorage.getItem('nombreUsuario');
-
-  if (nombreUsuario) {
-    userNameElement.textContent = nombreUsuario;
-  } else {
-    // Si no hay usuario en el localStorage, redirigir al login
-    window.location.href = '/login.html';
-  }
-
-  // Manejar el cierre de sesión
-  logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('nombreUsuario');
-    alert('Sesión cerrada');
-    window.location.href = '/index.html';
-  });
-
-  // Redirigir a la página de perfil
-  profileButton.addEventListener('click', () => {
-    window.location.href = '/perfil.html';
-  });
-});
-    </script>    
+        document.addEventListener('DOMContentLoaded', () => {
+          const userNameElement = document.getElementById('userName');
+          const logoutButton = document.getElementById('logoutButton');
+          const profileButton = document.getElementById('profileButton');
+        
+          // Obtener el nombre de usuario del localStorage
+          const nombreUsuario = localStorage.getItem('nombreUsuario');
+        
+          if (nombreUsuario) {
+            userNameElement.textContent = nombreUsuario;
+          } else {
+            // Si no hay usuario en el localStorage, redirigir al login
+            window.location.href = '/login.html';
+          }
+        
+          // Manejar el cierre de sesión
+          logoutButton.addEventListener('click', () => {
+            Swal.fire({
+              title: '¿Estás seguro?',
+              text: 'Tu sesión será cerrada.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Cerrar sesión',
+              cancelButtonText: 'Cancelar',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // El usuario confirmó cerrar sesión
+                localStorage.removeItem('token');
+                localStorage.removeItem('nombreUsuario');
+                Swal.fire({
+                  title: 'Sesión cerrada',
+                  text: 'Has cerrado sesión exitosamente.',
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar',
+                }).then(() => {
+                  // Redirigir al index después de cerrar sesión
+                  window.location.href = '/index.html';
+                });
+              }
+            });
+          });
+        
+          // Redirigir a la página de perfil
+          profileButton.addEventListener('click', () => {
+            Swal.fire({
+              title: 'Redirigiendo a tu perfil',
+              text: 'Por favor, espera un momento.',
+              icon: 'info',
+              timer: 1500,
+              showConfirmButton: false,
+            }).then(() => {
+              window.location.href = '/perfil.html';
+            });
+          });
+        });
+        </script>
+            
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
