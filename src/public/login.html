@@ -9,7 +9,9 @@
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<!-- CSS y JS de Intro.js -->
+<link href="https://cdn.jsdelivr.net/npm/intro.js/minified/introjs.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/intro.js/minified/intro.min.js"></script>
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap"
     rel="stylesheet"
@@ -148,6 +150,61 @@
         }
       });
   </script>
+  <script>
+    // Función para iniciar Intro.js
+    function startIntro() {
+      var intro = introJs();
+      intro.setOptions({
+        steps: [
+          {
+            element: '#correo',
+            intro: 'Introduce tu correo electrónico para iniciar sesión.',
+            position: 'right',
+          },
+          {
+            element: '#contrasena',
+            intro: 'Introduce tu contraseña aquí.',
+            position: 'right',
+          },
+          {
+            intro: 'Finalmente, haz clic en "Iniciar Sesión" para acceder a tu cuenta.',
+            position: 'bottom',
+          },
+          {
+            element: '[data-bs-target="#recuperarContrasenaModal"]',
+            intro: 'Si olvidaste tu contraseña, haz clic aquí para recuperarla.',
+            position: 'right',
+          },
+          {
+            element: '.info-childs input[value="Registrarse"]',
+            intro: 'Haz clic aquí para registrarte si aún no tienes una cuenta.',
+            position: 'right',
+          },
+          {
+            element: '.info-childs input[value="Regresar"]',
+            intro: 'Haz clic aquí para regresar a la página de inicio.',
+            position: 'right',
+          },
+        ],
+      });
+      intro.start();
+    }
+  
+    // Agregar el botón "Ver Guía" debajo de los botones "Registrarse" y "Regresar"
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttonContainer = document.querySelector('.info-childs'); // Selecciona el contenedor de botones
+      const introButton = document.createElement('input'); // Crear un botón tipo input
+      introButton.type = 'button';
+      introButton.value = 'Ver Guía';
+      introButton.className = 'btn'; // Asignar la misma clase usada por los otros botones
+      introButton.style.marginTop = '10px'; // Espaciado entre botones
+      introButton.onclick = startIntro;
+  
+      // Agregar el botón al contenedor
+      buttonContainer.appendChild(introButton);
+    });
+  </script>
+  
   <!-- Enlace al archivo de JavaScript externo -->
   <script src="login.js"></script>
 </body>

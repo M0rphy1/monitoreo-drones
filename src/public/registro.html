@@ -6,9 +6,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- SweetAlert2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- CSS y JS de Intro.js -->
+<link href="https://cdn.jsdelivr.net/npm/intro.js/minified/introjs.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/intro.js/minified/intro.min.js"></script>
+
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap"
       rel="stylesheet"
@@ -119,7 +123,76 @@
         </div>
       </div>
     </div>
-
+    <script>
+      // Función para iniciar Intro.js
+      function startIntro() {
+        var intro = introJs();
+        intro.setOptions({
+          steps: [
+            {
+              element: '#nombreUsuario',
+              intro: 'Introduce el nombre de usuario aquí. Este será único.',
+              position: 'right'
+            },
+            {
+              element: '#correo',
+              intro: 'Introduce tu correo electrónico. Este será utilizado para iniciar sesión.',
+              position: 'right'
+            },
+            {
+              element: '#contrasena',
+              intro: 'Crea una contraseña segura para tu cuenta.',
+              position: 'right'
+            },
+            {
+              element: '#nombre',
+              intro: 'Introduce tu nombre. Esto será visible en tu perfil.',
+              position: 'right'
+            },
+            {
+              element: '#apellido',
+              intro: 'Introduce tu apellido. Esto ayudará a identificarte.',
+              position: 'right'
+            },
+            {
+              element: '#telefono',
+              intro: 'Introduce tu número de teléfono. Es opcional, pero útil para el contacto.',
+              position: 'right'
+            },
+            {
+              element: '#direccion',
+              intro: 'Introduce tu dirección. Esto será usado para propósitos internos.',
+              position: 'right'
+            },
+            {
+              element: '#rol',
+              intro: 'Selecciona tu rol en la plataforma: Administrador o Usuario.',
+              position: 'right'
+            },
+            {
+              intro: '¡Finalmente, haz clic en el botón de "Registrarse" para completar tu registro!',
+              position: 'bottom'
+            }
+          ]
+        });
+        intro.start();
+      }
+    
+      // Inicia la guía interactiva al cargar la página
+      document.addEventListener('DOMContentLoaded', () => {
+        const buttonContainer = document.querySelector('.info-childs'); // Selecciona el contenedor correcto
+        const introButton = document.createElement('input'); // Cambia a un botón tipo input para mantener diseño
+        introButton.type = 'button';
+        introButton.value = 'Ver Guía';
+        introButton.className = 'btn'; // Agrega la clase utilizada por los otros botones
+        introButton.style.marginTop = '10px'; // Espacio entre botones
+        introButton.onclick = startIntro;
+    
+        // Agrega el botón debajo de los otros botones
+        buttonContainer.appendChild(introButton);
+      });
+    </script>
+    
     <!-- Enlace al archivo JavaScript externo -->
     <script src="registro.js"></script>
   </body>
