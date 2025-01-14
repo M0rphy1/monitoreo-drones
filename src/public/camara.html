@@ -8,6 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="./css/index.css">
+    <!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         #video-container {
             width: 90%;
@@ -223,6 +227,35 @@
     
         // Cargar la galería de videos al cargar la página
         document.addEventListener('DOMContentLoaded', loadGallery);
+    </script>
+    <script>
+        // Manejar el cierre de sesión
+        logoutButton.addEventListener('click', () => {
+            Swal.fire({
+              title: '¿Estás seguro?',
+              text: 'Tu sesión será cerrada.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Cerrar sesión',
+              cancelButtonText: 'Cancelar',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // El usuario confirmó cerrar sesión
+                localStorage.removeItem('token');
+                localStorage.removeItem('nombreUsuario');
+                
+                Swal.fire({
+                  title: 'Sesión cerrada',
+                  text: 'Has cerrado sesión exitosamente.',
+                  icon: 'success',
+                  confirmButtonText: 'Aceptar',
+                }).then(() => {
+                  // Redirigir al index después de confirmar el cierre de sesión
+                  window.location.href = '/index.html';
+                });
+              }
+            });
+          });
     </script>
 </body>
 </html>
