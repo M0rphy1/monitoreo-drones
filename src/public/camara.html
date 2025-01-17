@@ -8,10 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="./css/index.css">
-    <!-- SweetAlert2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         #video-container {
             width: 90%;
@@ -69,32 +65,27 @@
 <body>
     <!-- Menú de navegación -->
     <nav id="navigation" class="">
-
         <div class="wrapper">
-
             <a class="logo" href="index-dron.html">
-                <img  src="./assets/LOGO GG.svg" alt="Logo LSB Digital">
+                <img src="./assets/LOGO GG.svg" alt="Logo LSB Digital">
             </a>
-            
             <div class="menu">
-
                 <ul>
                     <li><a onclick="closeMenu()" href="index-dron.html">Principal</a></li>
                     <li><a onclick="closeMenu()" href="camara.html">Acceder Cámara</a></li>
                 </ul>
-                  <ul class="dropdown-menu hidden" id="dropdownMenu">
+                <ul class="dropdown-menu hidden" id="dropdownMenu">
                     <li><a class="dropdown-item" href="perfil.html">Mi Perfil</a></li>
                     <li class="dropdown-footer">
-                      <a id="logoutButton" class="btn btn-error btn-soft" href="#">Cerrar Sesión</a>
+                        <a id="logoutButton" class="btn btn-error btn-soft" href="#">Cerrar Sesión</a>
                     </li>
+                </ul>
             </div>
-            
-
             <button 
-            aria-expanded="false"
-            aria-label="Abrir menu"
-            onclick="openMenu()" 
-            class="open-menu">
+                aria-expanded="false"
+                aria-label="Abrir menu"
+                onclick="openMenu()" 
+                class="open-menu">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 20H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M10 12H30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -102,46 +93,38 @@
                 </svg> 
             </button>
             <button
-            aria-expanded="true"
-            aria-label="Fechar menu"
-            onclick="closeMenu()" 
-            class="close-menu">
+                aria-expanded="true"
+                aria-label="Fechar menu"
+                onclick="closeMenu()" 
+                class="close-menu">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M30 10L10 30M10 10L30 30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>                        
             </button>
-
         </div>
-           
     </nav>
-    <!--  -->
-    <br><br><br><br><br><br><br>
+    <br><br><br><br><br><br>
     <h1 style="text-align: center; color: white;">Transmisión en vivo</h1>
     <div id="video-container">
-        <iframe id="camera-stream" src="http://127.0.0.1:5000/start-camera" allowfullscreen></iframe>
+        <iframe id="camera-stream" src="http://127.0.0.1:5000/video_feed" allowfullscreen></iframe>
     </div>
-
     <div id="controls">
         <button onclick="startRecording()">Iniciar Grabación</button>
         <button onclick="stopRecording()">Detener Grabación</button>
     </div>
-
     <div id="notification-setup">
         <label for="notification-class" style="color: rgb(255, 255, 255);">Clase para recibir notificaciones:</label>
         <input type="text" id="notification-class" placeholder="Ejemplo: person">
         <button onclick="setNotificationClass()">Configurar</button>
     </div>
-
     <div id="notifications" style="color: rgb(255, 255, 255);">
         <h2>Notificaciones:</h2>
         <ul id="notification-list"></ul>
     </div>
-    <!-- Archivo de sonido -->
     <audio id="notification-sound" src="./assets/notification.mp3" preload="auto"></audio>
-
     <script>
         const socket = io('http://127.0.0.1:5000');
-    
+
         function startRecording() {
             fetch('http://127.0.0.1:5000/start-recording', { method: 'POST' })
                 .then(response => response.json())
@@ -156,7 +139,7 @@
                 })
                 .catch(err => console.error(err));
         }
-    
+
         function stopRecording() {
             fetch('http://127.0.0.1:5000/stop-recording', { method: 'POST' })
                 .then(response => response.json())
@@ -172,7 +155,7 @@
                 })
                 .catch(err => console.error(err));
         }
-    
+
         function setNotificationClass() {
             const notificationClass = document.getElementById('notification-class').value;
             if (notificationClass) {
@@ -186,13 +169,13 @@
                 });
             }
         }
-    
+
         socket.on('notification', (data) => {
             const notificationList = document.getElementById('notification-list');
             const newNotification = document.createElement('li');
             newNotification.textContent = data.message;
             notificationList.appendChild(newNotification);
-    
+
             Swal.fire({
                 title: 'Notificación',
                 text: data.message,
@@ -200,11 +183,11 @@
                 confirmButtonText: 'Aceptar',
                 timer: 3000,
             });
-    
+
             const audio = document.getElementById('notification-sound');
             audio.play();
         });
-    
+
         socket.on('confirmation', (data) => {
             Swal.fire({
                 title: 'Confirmación',
@@ -214,7 +197,7 @@
                 timer: 3000,
             });
         });
-    
+
         socket.on('recording-status', (data) => {
             Swal.fire({
                 title: 'Estado de grabación',
@@ -224,38 +207,27 @@
                 timer: 3000,
             });
         });
-    
-        // Cargar la galería de videos al cargar la página
-        document.addEventListener('DOMContentLoaded', loadGallery);
-    </script>
-    <script>
-        // Manejar el cierre de sesión
-        logoutButton.addEventListener('click', () => {
-            Swal.fire({
-              title: '¿Estás seguro?',
-              text: 'Tu sesión será cerrada.',
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Cerrar sesión',
-              cancelButtonText: 'Cancelar',
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // El usuario confirmó cerrar sesión
-                localStorage.removeItem('token');
-                localStorage.removeItem('nombreUsuario');
-                
-                Swal.fire({
-                  title: 'Sesión cerrada',
-                  text: 'Has cerrado sesión exitosamente.',
-                  icon: 'success',
-                  confirmButtonText: 'Aceptar',
-                }).then(() => {
-                  // Redirigir al index después de confirmar el cierre de sesión
-                  window.location.href = '/index.html';
-                });
-              }
-            });
-          });
+
+        function loadGallery() {
+            fetch('http://127.0.0.1:5000/list-videos')
+                .then(response => response.json())
+                .then(videos => {
+                    const gallery = document.getElementById('video-gallery');
+                    gallery.innerHTML = '';
+                    videos.forEach(video => {
+                        const videoElement = document.createElement('video');
+                        videoElement.src = `http://127.0.0.1:5000/videos/${video}`;
+                        videoElement.controls = true;
+                        gallery.appendChild(videoElement);
+                    });
+                })
+                .catch(err => console.error(err));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGallery();
+        });
     </script>
 </body>
 </html>
+

@@ -1,101 +1,117 @@
-import os
-from flask import Flask, Response, jsonify, send_from_directory
+from flask import Flask, render_template, Response, jsonify
 from flask_socketio import SocketIO, emit
 import cv2
-import time
 import numpy as np
+import os
+import time
 
-# Inicializa la aplicación Flask y SocketIO
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Configuración del directorio de videos
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-VIDEO_DIR = os.path.join(BASE_DIR, "videos")
-os.makedirs(VIDEO_DIR, exist_ok=True)  # Crea el directorio de videos si no existe
+# Configuración del modelo MobileNet SSD
+prototxt = "../models/MobileNetSSD_deploy.prototxt.txt"
+model = "../models/MobileNetSSD_deploy.caffemodel"
+net = cv2.dnn.readNetFromCaffe(prototxt, model)
 
-# Configuración del modelo de detección de objetos
-prototxt = os.path.join(BASE_DIR, "../models/MobileNetSSD_deploy.prototxt.txt")
-model = os.path.join(BASE_DIR, "../models/MobileNetSSD_deploy.caffemodel")
-net = cv2.dnn.readNetFromCaffe(prototxt, model)  # Carga el modelo preentrenado
-
-# Clases y colores para los objetos detectados
+# Lista de clases
 classes = ["background", "aeroplane", "bicycle", "bird", "boat",
            "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
            "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
            "sofa", "train", "tvmonitor"]
+
+# Colores para las clases
 colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
+# Directorio de videos grabados
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+VIDEO_DIR = os.path.join(BASE_DIR, "videos")
+os.makedirs(VIDEO_DIR, exist_ok=True)
+
 # Variables globales
-user_notified_class = None  # Clase configurada para notificaciones
-already_notified = False    # Bandera para evitar notificaciones repetidas
-recording = False           # Estado de grabación
-video_writer = None         # Objeto para escribir videos
+recording = False
+video_writer = None
+user_notified_class = None
+already_notified = False
 
-# Ruta para iniciar la cámara y detección de objetos
-@app.route('/start-camera')
-def start_camera():
-    def detect_objects():
-        global user_notified_class, already_notified, recording, video_writer
-        cap = cv2.VideoCapture(0)  # Abre la cámara
+# URL del video del dron (reemplaza <ipservidor> y <clave>)
+video_url = "URL" # AQUI SE RECOMIENDA PONER EL URL DE LA TRANSMISION DEL DRON
 
-        if not cap.isOpened():
-            return "No se pudo abrir la cámara", 500
+def detect_and_stream():
+    global recording, video_writer, user_notified_class, already_notified
 
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
+    cap = cv2.VideoCapture(video_url)
 
-            # Preprocesamiento de la imagen
-            frame = cv2.resize(frame, (1280, 720))
-            (h, w) = frame.shape[:2]
-            blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), 127.5)
-            net.setInput(blob)
-            detections = net.forward()  # Realiza la detección de objetos
+    if not cap.isOpened():
+        print("No se pudo abrir la transmisión del dron.")
+        return
 
-            for i in range(detections.shape[2]):
-                confidence = detections[0, 0, i, 2]
-                if confidence > 0.2:  # Filtra detecciones con confianza menor al 20%
-                    idx = int(detections[0, 0, i, 1])
-                    label = classes[idx]
-                    color = colors[idx]
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print("No se pudo leer el frame.")
+            break
 
-                    # Dibuja un cuadro delimitador y etiqueta en la imagen
-                    box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                    (startX, startY, endX, endY) = box.astype("int")
-                    cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
-                    text = f"{label}: {confidence:.2f}"
-                    cv2.putText(frame, text, (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        # Dimensiones del frame
+        (h, w) = frame.shape[:2]
 
-                    # Envía una notificación si se detecta la clase configurada
-                    if user_notified_class and label == user_notified_class and not already_notified:
-                        socketio.emit('notification', {'message': f'{label} detectado'})
-                        already_notified = True
+        # Preprocesar el frame para el modelo
+        blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), 127.5)
+        net.setInput(blob)
+        detections = net.forward()
 
-            # Graba el video si está habilitada la grabación
-            if recording:
-                if video_writer is None:
-                    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-                    timestamp = int(time.time())
-                    video_writer = cv2.VideoWriter(os.path.join(VIDEO_DIR, f'video_{timestamp}.avi'), fourcc, 20.0, (w, h))
-                video_writer.write(frame)
+        # Detección de objetos
+        for i in range(detections.shape[2]):
+            confidence = detections[0, 0, i, 2]
+            if confidence > 0.2:  # Filtrar detecciones confiables
+                idx = int(detections[0, 0, i, 1])
+                label = classes[idx]
 
-            # Convierte el frame a bytes para enviar al cliente
-            _, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                # Coordenadas de la caja
+                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                (startX, startY, endX, endY) = box.astype("int")
 
-        cap.release()
-        if video_writer:
-            video_writer.release()
-            video_writer = None
+                # Dibujar la caja y la etiqueta
+                color = colors[idx]
+                cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
+                text = f"{label}: {confidence:.2f}"
+                cv2.putText(frame, text, (startX, startY - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    return Response(detect_objects(), mimetype='multipart/x-mixed-replace; boundary=frame')
+                # Enviar notificación si se detecta la clase configurada
+                if user_notified_class and label == user_notified_class and not already_notified:
+                    socketio.emit('notification', {'message': f'{label} detectado'})
+                    already_notified = True
 
-# Ruta para iniciar la grabación
+        # Grabar el video si está habilitada la grabación
+        if recording:
+            if video_writer is None:
+                fourcc = cv2.VideoWriter_fourcc(*'XVID')
+                timestamp = int(time.time())
+                video_writer = cv2.VideoWriter(os.path.join(VIDEO_DIR, f'video_{timestamp}.avi'), fourcc, 20.0, (w, h))
+            video_writer.write(frame)
+
+        # Codificar la imagen procesada como JPEG
+        _, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+
+        # Stream de video
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+    cap.release()
+    if video_writer:
+        video_writer.release()
+        video_writer = None
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(detect_and_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 @app.route('/start-recording', methods=['POST'])
 def start_recording():
     global recording
@@ -103,7 +119,6 @@ def start_recording():
     socketio.emit('recording-status', {'status': 'Grabación iniciada'})
     return jsonify({'message': 'Grabación iniciada'})
 
-# Ruta para detener la grabación
 @app.route('/stop-recording', methods=['POST'])
 def stop_recording():
     global recording, video_writer
@@ -114,18 +129,15 @@ def stop_recording():
     socketio.emit('recording-status', {'status': 'Grabación detenida'})
     return jsonify({'message': 'Grabación detenida'})
 
-# Ruta para listar los videos grabados
 @app.route('/list-videos', methods=['GET'])
 def list_videos():
     videos = [f for f in os.listdir(VIDEO_DIR) if f.endswith('.avi')]
     return jsonify(videos)
 
-# Ruta para descargar un video específico
 @app.route('/videos/<filename>')
 def get_video(filename):
-    return send_from_directory(VIDEO_DIR, filename)
+    return Response(open(os.path.join(VIDEO_DIR, filename), 'rb').read(), mimetype='video/x-msvideo')
 
-# Evento de socket para configurar la clase de notificación
 @socketio.on('set_notification_class')
 def set_notification_class(data):
     global user_notified_class, already_notified
@@ -133,6 +145,5 @@ def set_notification_class(data):
     already_notified = False
     emit('confirmation', {'message': f'Notificaciones configuradas para la clase: {user_notified_class}'})
 
-# Inicia la aplicación Flask con soporte para SocketIO
-if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
