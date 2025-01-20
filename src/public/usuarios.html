@@ -82,6 +82,19 @@
         #logoutButton {
             border: none;
         }
+        /*boton*/
+        .btn-success {
+            background-color: #28a745;
+            color: #fff;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -143,6 +156,11 @@
     </div> 
     <div class="container user-table-container">
         <h1>Gestión de Usuarios</h1>
+<!-- Botón para abrir la ventana modal de creación -->
+<div class="text-center mt-3">
+    <button class="btn btn-primary btn-lg" onclick="openCreateUserModal()">Crear Usuario</button>
+</div>
+<br>
         <table class="table table-striped">
             <thead class="table-primary">
                 <tr>
@@ -199,7 +217,57 @@
             </div>
         </div>
     </div>
-
+<!-- Modal para crear usuario -->
+<div id="createModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createForm">
+                    <div class="mb-3">
+                        <label for="createNombreUsuario" class="form-label">Usuario</label>
+                        <input type="text" id="createNombreUsuario" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createNombre" class="form-label">Nombre</label>
+                        <input type="text" id="createNombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createApellido" class="form-label">Apellido</label>
+                        <input type="text" id="createApellido" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createCorreo" class="form-label">Correo</label>
+                        <input type="email" id="createCorreo" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createContrasena" class="form-label">Contraseña</label>
+                        <input type="password" id="createContrasena" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="createTelefono" class="form-label">Teléfono</label>
+                        <input type="text" id="createTelefono" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="createDireccion" class="form-label">Dirección</label>
+                        <input type="text" id="createDireccion" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="createIdRol" class="form-label">Rol</label>
+                        <select id="createIdRol" class="form-control" required>
+                            <option value="1">Administrador</option>
+                            <option value="2">Usuario</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Guardar Usuario</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Modal para eliminar usuario -->
     <div id="deleteModal" class="modal" tabindex="-1">
         <div class="modal-dialog">
@@ -412,6 +480,69 @@
     
             loadUsers();
         });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const createModal = new bootstrap.Modal(document.getElementById('createModal'));
+
+    // Función para abrir el modal de creación de usuario
+    window.openCreateUserModal = () => {
+        document.getElementById('createForm').reset();
+        createModal.show();
+    };
+
+    // Enviar la creación del usuario
+    document.getElementById('createForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const newUser = {
+            nombreUsuario: document.getElementById('createNombreUsuario').value,
+            nombre: document.getElementById('createNombre').value,
+            apellido: document.getElementById('createApellido').value,
+            correo: document.getElementById('createCorreo').value,
+            contrasena: document.getElementById('createContrasena').value,
+            telefono: document.getElementById('createTelefono').value,
+            direccion: document.getElementById('createDireccion').value,
+            idRol: document.getElementById('createIdRol').value
+        };
+
+        try {
+            const response = await fetch('/api/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newUser)
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    title: 'Usuario Creado',
+                    text: 'El usuario ha sido creado exitosamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    createModal.hide();
+                    loadUsers(); // Recargar la tabla de usuarios
+                });
+            } else {
+                const errorData = await response.json();
+                Swal.fire({
+                    title: 'Error',
+                    text: errorData.error || 'No se pudo crear el usuario',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        } catch (error) {
+            console.error('Error al crear usuario:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al crear el usuario.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+    });
+});
     </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
