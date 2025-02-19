@@ -7,7 +7,7 @@ import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 # Configuración del modelo MobileNet SSD
 prototxt = "../models/MobileNetSSD_deploy.prototxt.txt"
@@ -23,9 +23,8 @@ classes = ["background", "aeroplane", "bicycle", "bird", "boat",
 # Colores para las clases
 colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
-# Directorio de videos grabados
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-VIDEO_DIR = os.path.join(BASE_DIR, "videos")
+# 📌 Nueva ubicación para guardar los videos
+VIDEO_DIR = r"C:\Users\USER\Desktop\Videos-proyecto"
 os.makedirs(VIDEO_DIR, exist_ok=True)
 
 # Variables globales
@@ -34,8 +33,8 @@ video_writer = None
 user_notified_class = None
 already_notified = False
 
-# URL del video del dron (reemplaza <ipservidor> y <clave>)
-video_url = "URL" # AQUI SE RECOMIENDA PONER EL URL DE LA TRANSMISION DEL DRON
+# 📡 URL del video del dron (reemplaza con la URL real)
+video_url = "http://190.63.37.250:8080/hls/dji.m3u8"
 
 def detect_and_stream():
     global recording, video_writer, user_notified_class, already_notified
@@ -47,13 +46,22 @@ def detect_and_stream():
         return
 
     while True:
+        start_time = time.time()  # 📌 Tiempo antes de capturar el frame
+
         ret, frame = cap.read()
         if not ret:
             print("No se pudo leer el frame.")
             break
 
-        # Dimensiones del frame
+        received_time = time.time()  # 📌 Tiempo después de recibir el frame
+        latency_ms = (received_time - start_time) * 1000  # 📌 Calcular latencia en ms
+        socketio.emit('latency', {'latency': latency_ms})
+
         (h, w) = frame.shape[:2]
+
+        # 📌 Mostrar la latencia en el frame de video
+        cv2.putText(frame, f"Latency: {latency_ms:.2f} ms", (10, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Preprocesar el frame para el modelo
         blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), 127.5)
@@ -63,15 +71,13 @@ def detect_and_stream():
         # Detección de objetos
         for i in range(detections.shape[2]):
             confidence = detections[0, 0, i, 2]
-            if confidence > 0.2:  # Filtrar detecciones confiables
+            if confidence > 0.2:
                 idx = int(detections[0, 0, i, 1])
                 label = classes[idx]
 
-                # Coordenadas de la caja
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 (startX, startY, endX, endY) = box.astype("int")
 
-                # Dibujar la caja y la etiqueta
                 color = colors[idx]
                 cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
                 text = f"{label}: {confidence:.2f}"
@@ -83,12 +89,16 @@ def detect_and_stream():
                     socketio.emit('notification', {'message': f'{label} detectado'})
                     already_notified = True
 
-        # Grabar el video si está habilitada la grabación
+        # 📌 Si la grabación está activada, guardar el frame
         if recording:
             if video_writer is None:
                 fourcc = cv2.VideoWriter_fourcc(*'XVID')
                 timestamp = int(time.time())
-                video_writer = cv2.VideoWriter(os.path.join(VIDEO_DIR, f'video_{timestamp}.avi'), fourcc, 20.0, (w, h))
+                video_path = os.path.join(VIDEO_DIR, f'video_{timestamp}.avi')
+
+                # 🔹 CONFIGURAR FPS (ajusta el valor según sea necesario, prueba con 15 o 30)
+                video_writer = cv2.VideoWriter(video_path, fourcc, 15.0, (w, h))
+
             video_writer.write(frame)
 
         # Codificar la imagen procesada como JPEG

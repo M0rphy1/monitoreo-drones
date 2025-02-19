@@ -22,6 +22,61 @@
            background-color: transparent; /* Asegúrate de que no bloquee otros fondos */
        }
    </style>
+   <style>
+    .about-us {
+        position: relative;
+        z-index: 1000;
+        padding: 80px 20px;
+        text-align: center;
+        background: linear-gradient(135deg, #1a1a2e 30%, #3b3b98 100%); /* Degradado azul oscuro - morado */
+        border-radius: 10px;
+        max-width: 90%;
+        margin: 0 auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Sombra más intensa para resaltarlo */
+    }
+
+    .about-us h2 {
+        font-size: 2rem;
+        color: #00aaff; /* Azul brillante para destacar */
+        margin-bottom: 20px;
+    }
+
+    .about-us p {
+        font-size: 1.2rem;
+        color: #fff; /* Texto blanco para contraste */
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .about-grid {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 40px;
+    }
+
+    .about-item {
+        max-width: 300px;
+        text-align: center;
+    }
+
+    .about-item img {
+        width: 80px;
+        margin-bottom: 15px;
+    }
+
+    .about-item h3 {
+        font-size: 1.5rem;
+        color: #0053a5;
+        margin-bottom: 10px;
+    }
+
+    .about-item p {
+        font-size: 1rem;
+        color: #555;
+    }
+</style>
 </head>
 <body>   
     
@@ -59,7 +114,7 @@
                 <path d="M18 28L30 28" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg> 
             </button>
-            <!-- <button
+             <button
             aria-expanded="true"
             aria-label="Fechar menu"
             onclick="closeMenu()" 
@@ -67,7 +122,7 @@
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M30 10L10 30M10 10L30 30" stroke="#FFFAF1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>                        
-            </button> -->
+            </button>
 
         </div>
            
@@ -124,6 +179,17 @@
         </div>
         <img class="circle" src="./assets/Shape Divider.svg" alt="">
     </header>
+    <!-- Agregar esta sección después del header -->
+    <section id="user" class="about-us">
+        <div class="wrapper">
+            <h2>Sobre Nosotros</h2>
+            <p>
+                Somos un equipo de estudiantes que desarrolla esta plataforma web de monitoreo de drones 
+                como propuesta de tesis para la ESPOCH. Nuestro objetivo es ofrecer una solución innovadora 
+                para la vigilancia aérea, mejorando la seguridad y optimizando el monitoreo en eventos en tiempo real.
+            </p>
+        </div>
+    </section>
 
     <div class="cursor-dot" data-cursor-dot></div>
     <div class="cursor-outline" data-cursor-outline></div>
