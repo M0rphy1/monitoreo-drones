@@ -11,6 +11,16 @@ const Rol = sequelize.define('Rol', {
     type: DataTypes.STRING(100),
     allowNull: false
   },
+  fecha_creacion: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: DataTypes.NOW
+  },
+  fecha_modificacion: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: DataTypes.NOW
+  },
 }, {
   tableName: 'Rol',
   timestamps: false

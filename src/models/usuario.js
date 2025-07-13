@@ -34,6 +34,16 @@ const Usuario = sequelize.define('Usuario', {
   idRol: {
     type: DataTypes.INTEGER,
   },
+  fecha_creacion: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: DataTypes.NOW
+  },
+  fecha_modificacion: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: DataTypes.NOW
+  },
 }, {
   tableName: 'Usuario',
   timestamps: false,

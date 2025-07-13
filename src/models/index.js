@@ -7,7 +7,7 @@ Usuario.belongsTo(Rol, { foreignKey: 'idRol'});
 Rol.hasMany(Usuario, { foreignKey: 'idRol' });
 
 // Sincronización de modelos con la base de datos
-sequelize.sync({ force: true }) // force: true eliminará las tablas existentes y las volverá a crear
+sequelize.sync({ alter: true }) // force: true eliminará las tablas existentes y las volverá a crear
   .then(() => {
     console.log('Tablas sincronizadas correctamente.');
   })
